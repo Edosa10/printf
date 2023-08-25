@@ -1,33 +1,33 @@
 #include "main.h"
 
-int _fprintf(const char *format, ...) {
-    va_list new;
-    va_start(new, format);
-    
+int _printf(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
     int count = 0;  // To keep track of the number of characters printed
-    
-    for (const char *z = format; *c != '\0'; ++c) {
-        if (*z == '%') {
-            ++z;  // Move past the '%'
-            
-            if (*z == '\0') {
+
+    for (const char *c = format; *c != '\0'; ++c) {
+        if (*c == '%') {
+            ++c;  // Move past the '%'
+
+            if (*c == '\0') {
                 // Unexpected end of format string
                 break;
             }
-            
-            if (*z == 'c') {
+
+            if (*c == 'c') {
                 // Print a character
-                char ch = (char)va_arg(new, int);
+                char ch = (char)va_arg(args, int);
                 putchar(ch);
                 ++count;
-            } else if (*z == 's') {
+            } else if (*c == 's') {
                 // Print a string
-                const char *str = va_arg(new, const char *);
+                const char *str = va_arg(args, const char *);
                 for (; *str != '\0'; ++str) {
                     putchar(*str);
                     ++count;
                 }
-            } else if (*z == '%') {
+            } else if (*c == '%') {
                 // Print a '%'
                 putchar('%');
                 ++count;
@@ -41,8 +41,8 @@ int _fprintf(const char *format, ...) {
             ++count;
         }
     }
-    
-    va_end(new);
+
+    va_end(args);
     return count;
 }
 
@@ -50,3 +50,4 @@ int main() {
     _printf("Hello, %s! This is a %c test %%.\n", "John", 'C');
     return 0;
 }
+
