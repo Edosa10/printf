@@ -54,4 +54,3 @@ int main() {
     _printf("Hello, %s! The answer is %d%%. A char: %c\n", "world", 42, 'A');
     return 0;
 }
-
