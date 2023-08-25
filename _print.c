@@ -1,53 +1,58 @@
+#include <stdio.h>
 #include "main.h"
+
+/**
+ * main - Entry point
+ *
+ * Return: Always 0
+ */
 
 int _printf(const char *format, ...) {
     va_list args;
     va_start(args, format);
-
+    
     int count = 0;  // To keep track of the number of characters printed
-
-    for (const char *c = format; *c != '\0'; ++c) {
-        if (*c == '%') {
-            ++c;  // Move past the '%'
-
-            if (*c == '\0') {
-                // Unexpected end of format string
-                break;
-            }
-
-            if (*c == 'c') {
-                // Print a character
-                char ch = (char)va_arg(args, int);
-                putchar(ch);
-                ++count;
-            } else if (*c == 's') {
-                // Print a string
-                const char *str = va_arg(args, const char *);
-                for (; *str != '\0'; ++str) {
-                    putchar(*str);
-                    ++count;
-                }
-            } else if (*c == '%') {
-                // Print a '%'
-                putchar('%');
-                ++count;
-            } else {
-                // Unsupported conversion specifier
-                break;
-            }
+    
+    while (*format) {
+        if (*format != '%') {
+            // Ordinary character, just write it
+            write(1, format, 1);
+            count++;
         } else {
-            // Normal character, just print it
-            putchar(*c);
-            ++count;
+            format++;  // Move past the '%'
+            
+            // Check the conversion specifier
+            switch (*format) {
+                case 'c':
+                    // Print a character
+                    char c = va_arg(args, int);
+                    write(1, &c, 1);
+                    count++;
+                    break;
+                case 's':
+                    // Print a string
+                    char *str = va_arg(args, char *);
+                    for (int i = 0; str[i]; i++) {
+                        write(1, &str[i], 1);
+                        count++;
+                    }
+                    break;
+                case '%':
+                    // Print a literal '%'
+                    write(1, "%", 1);
+                    count++;
+                    break;
+                default:
+                    // Unknown conversion specifier, just print the '%'
+                    write(1, "%", 1);
+                    count++;
+                    break;
+            }
         }
+        
+        format++;  // Move to the next character in the format string
     }
-
+    
     va_end(args);
     return count;
 }
-
-int main() {
-    _printf("Hello, %s! This is a %c test %%.\n", "John", 'C');
-    return 0;
-}
-
